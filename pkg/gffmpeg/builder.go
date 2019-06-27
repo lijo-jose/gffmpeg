@@ -8,102 +8,106 @@ import (
 
 type Builder interface {
 	SrcPath(srcPath string) Builder
-	DistPath(distPath string) Builder
+	DestPath(distPath string) Builder
 	KeyInt(keyInt int) Builder
-	BitRate(rate int ) Builder
+	BitRate(rate int) Builder
 	BufSize(size int) Builder
-	Threads(threadsNum int)Builder
+	VideoFilters(filters string) Builder
+	Threads(threadsNum int) Builder
 	CutVideoStartTime(startTime int) Builder
 	CutVideoEndTime(endTime int) Builder
-	CutVideo()Builder
+	CutVideo() Builder
 	ThumbStartTime(startTime int) Builder
 	ThumbResolution(resolution string) Builder
 	Thumb() Builder
-	Build()([]string)
+	Build() []string
 }
 
 type FFBuilder struct {
 	cmds []string
 }
 
-func NewBuilder() Builder  {
-	return &FFBuilder{cmds:make([]string,0)}
+func NewBuilder() Builder {
+	return &FFBuilder{cmds: make([]string, 0)}
 }
-func (bd *FFBuilder)CutVideo() Builder{
-	bd.addCmds("-codec","copy")
+func (bd *FFBuilder) CutVideo() Builder {
+	bd.addCmds("-codec", "copy")
 	return bd
 }
-func (bd *FFBuilder)CutVideoStartTime(startTime int) Builder{
-	if startTime >0 {
-		bd.addCmds("-ss",strconv.Itoa(startTime))
+func (bd *FFBuilder) CutVideoStartTime(startTime int) Builder {
+	if startTime > 0 {
+		bd.addCmds("-ss", strconv.Itoa(startTime))
 	}
 	return bd
 }
-func (bd *FFBuilder)CutVideoEndTime(endTime int) Builder{
-	if endTime >0 {
-		bd.addCmds("-t",strconv.Itoa(endTime))
+func (bd *FFBuilder) CutVideoEndTime(endTime int) Builder {
+	if endTime > 0 {
+		bd.addCmds("-t", strconv.Itoa(endTime))
 	}
 	return bd
 }
-func (bd *FFBuilder)Thumb() Builder{
-	bd.addCmds("-f","image2")
+func (bd *FFBuilder) VideoFilters(filters string) Builder {
+	bd.addCmds("-vf", filters)
+}
+func (bd *FFBuilder) Thumb() Builder {
+	bd.addCmds("-f", "image2")
 	return bd
 }
-func (bd *FFBuilder)ThumbResolution(resolution string)Builder{
+func (bd *FFBuilder) ThumbResolution(resolution string) Builder {
 
-	if len(resolution)>0 {
-		bd.addCmds("-s",resolution)
+	if len(resolution) > 0 {
+		bd.addCmds("-s", resolution)
 	}
 	return bd
 }
-func (bd *FFBuilder)ThumbStartTime(startTime int) Builder{
+func (bd *FFBuilder) ThumbStartTime(startTime int) Builder {
 
-	if startTime>0 {
-		bd.addCmds("-t",strconv.Itoa(startTime))
+	if startTime > 0 {
+		bd.addCmds("-t", strconv.Itoa(startTime))
 	}
 	return bd
 }
-func (bd *FFBuilder)Build()([]string){
+func (bd *FFBuilder) Build() []string {
 	return bd.cmds
 }
-func (bd *FFBuilder)addCmds(cmds ...string){
-	for _,v:=range cmds{
-		bd.cmds = append(bd.cmds,v)
+func (bd *FFBuilder) addCmds(cmds ...string) {
+	for _, v := range cmds {
+		bd.cmds = append(bd.cmds, v)
 	}
 }
-func (bd *FFBuilder)BitRate(rate int ) Builder{
-	if rate >0 {
-		bd.addCmds("-b:v",fmt.Sprintf("%dk",rate))
-	}
-	return bd
-}
-func (bd *FFBuilder)BufSize(size int)  Builder{
-	if size >0 {
-		bd.addCmds("-bufsize",fmt.Sprintf("%dk",size))
+func (bd *FFBuilder) BitRate(rate int) Builder {
+	if rate > 0 {
+		bd.addCmds("-b:v", fmt.Sprintf("%dk", rate))
 	}
 	return bd
 }
-func (bd *FFBuilder)Threads(threadsNum int)Builder{
-	if threadsNum>0 {
-		bd.addCmds("-threads",strconv.Itoa(threadsNum))
+func (bd *FFBuilder) BufSize(size int) Builder {
+	if size > 0 {
+		bd.addCmds("-bufsize", fmt.Sprintf("%dk", size))
 	}
 	return bd
 }
-func (bd *FFBuilder)SrcPath(srcPath string) Builder {
-	if len(srcPath)>0 {
-		bd.addCmds("-i",srcPath)
+func (bd *FFBuilder) Threads(threadsNum int) Builder {
+	if threadsNum > 0 {
+		bd.addCmds("-threads", strconv.Itoa(threadsNum))
 	}
 	return bd
 }
-func (bd *FFBuilder)DistPath(distPath string) Builder {
-	if len(distPath)>0 {
-		bd.addCmds("-y",distPath)
+func (bd *FFBuilder) SrcPath(srcPath string) Builder {
+	if len(srcPath) > 0 {
+		bd.addCmds("-i", srcPath)
 	}
 	return bd
 }
-func (bd *FFBuilder)KeyInt(keyInt int) Builder {
-	if keyInt>0 {
-		bd.addCmds("-x264opts",fmt.Sprintf("keyint=%d",keyInt))
+func (bd *FFBuilder) DestPath(destPath string) Builder {
+	if len(destPath) > 0 {
+		bd.addCmds("-y", destPath)
+	}
+	return bd
+}
+func (bd *FFBuilder) KeyInt(keyInt int) Builder {
+	if keyInt > 0 {
+		bd.addCmds("-x264opts", fmt.Sprintf("keyint=%d", keyInt))
 	}
 	return bd
 }
