@@ -48,6 +48,7 @@ func (bd *FFBuilder) CutVideoEndTime(endTime int) Builder {
 }
 func (bd *FFBuilder) VideoFilters(filters string) Builder {
 	bd.addCmds("-vf", filters)
+	return bd
 }
 func (bd *FFBuilder) Thumb() Builder {
 	bd.addCmds("-f", "image2")
