@@ -1,7 +1,7 @@
 ## install 
 
 ```
-go get github.com/yale8848/gffmpeg
+go get github.com/lijo-jose/gffmpeg
 
 ```
 
